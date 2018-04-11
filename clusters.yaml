@@ -1,7 +1,6 @@
+clusters:
 - alias: hasura
-  config:
-    configmap: controller-conf
-    namespace: hasura
   data: null
-  kubeContext: continuously32
-  name: continuously32
+  infra:
+    provider: hasura-free
+version: v1
