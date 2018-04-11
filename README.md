@@ -1,55 +1,67 @@
-# base
+The Gatsby project included in this Hasura project is the one that you would get when running `gatsby new <project-name>`
 
-A blank template to be used as a starting point to build projects on Hasura. A "project" is a "gittable" directory in the file system, which captures all the information regarding clusters, services and migrations. It can also be used to keep source code for custom services that you write.
+## Pre-requisites
 
-## Files and Directories
+- Ensure that you have the HasuraCLI installed. If not, you can find instructions to install it [here](https://docs.hasura.io/0.15/manual/install-hasura-cli.html).
+- Login into Hasura by running `hasura login` in your command shell.
 
-The project (a.k.a. project directory) has a particular directory structure and it has to be maintained strictly, else `hasura` cli would not work as expected. A representative project is shown below:
+## Getting started 
 
-```
-.
-├── hasura.yaml
-├── clusters.yaml
-├── conf
-│   ├── authorized-keys.yaml
-│   ├── auth.yaml
-│   ├── ci.yaml
-│   ├── domains.yaml
-│   ├── filestore.yaml
-│   ├── gateway.yaml
-│   ├── http-directives.conf
-│   ├── notify.yaml
-│   ├── postgres.yaml
-│   ├── routes.yaml
-│   └── session-store.yaml
-├── migrations
-│   ├── 1504788327_create_table_userprofile.down.yaml
-│   ├── 1504788327_create_table_userprofile.down.sql
-│   ├── 1504788327_create_table_userprofile.up.yaml
-│   └── 1504788327_create_table_userprofile.up.sql
-└── microservices 
-    ├── adminer
-    │   └── k8s.yaml
-    └── flask
-        ├── src/
-        ├── k8s.yaml
-        └── Dockerfile
+To get the project, run the following in your command shell:
+
+```bash
+$ hasura quickstart hasura/react-gatsby
+$ cd react-gatsby
+$ git add . && git commit -m "Initial Commit"
 ```
 
-### `hasura.yaml`
+To deploy the app:
 
-This file contains some metadata about the project, namely a name, description and some keywords. Also contains `platformVersion` which says which Hasura platform version is compatible with this project.
-
-### `clusters.yaml`
-
-Info about the clusters added to this project can be found in this file. Each cluster is defined by it's name allotted by Hasura. While adding the cluster to the project you are prompted to give an alias, which is just hasura by default. The `kubeContext` mentions the name of kubernetes context used to access the cluster, which is also managed by hasura. The `config` key denotes the location of cluster's metadata on the cluster itself. This information is parsed and cluster's metadata is appended while conf is rendered. `data` key is for holding custom variables that you can define.
-
-```yaml
-- name: h34-ambitious93-stg
-  alias: hasura
-  kubeContext: h34-ambitious93-stg
-  config:
-    configmap: controller-conf
-    namespace: hasura
-  data: null  
+```bash
+# Ensure that you are inside the react-gatsby directory
+$ git push hasura master
 ```
+
+The Gatsby app will run at the `ui` subdomain. To open the app in your browser, run 
+
+```bash
+$ hasura microservice open ui
+```
+
+## Where does my code live?
+
+The code to the Gatsby app can be found inside the `microservices/ui/app` directory.
+
+## Running the app locally
+
+Running the app locally is just like running any node app. Navigate to `microservices/ui/app`
+
+```bash
+# If this is the first time
+$ npm install
+# you can also run gatsby develop to locally run the app
+$ npm run develop
+```
+
+## Deploying changes 
+
+Deploying on Hasura is literally `git pushing` to an external remote. In this case, that remote is automatically added for you during the `quickstart` step. 
+
+So, after you are done with your changes
+
+```bash
+$ git add . && git commit -m "Changes"
+$ git push hasura master
+```
+
+## Migrating an existing Gatsby app into Hasura
+
+As mentioned in the earlier sections. Your code resides inside the `microservices/ui/app` directory. You can go ahead and modify/replace the contents based on your requirements. 
+
+The only assumptions made for deployment to work seamlessly is 
+- All your code resides inside `microservices/ui/app`
+- We run the`npm run build` command to build the app. 
+- We run the `npm run start` command to serve the built files. 
+- The Gatsby app is served at port 8080
+
+If you require, any sort of modification, it's best to modify the build and start command in `package.json`. If that does not suffice, you will mostly have to modify the `Dockerfile` or the `k8s.yaml` file inside `microservices/ui/`. 
